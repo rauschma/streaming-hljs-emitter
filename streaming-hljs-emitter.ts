@@ -2,6 +2,7 @@ import type { Emitter, HLJSOptions } from 'highlight.js';
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
 import xml from 'highlight.js/lib/languages/xml';
+import { UnsupportedValueError, assertTrue } from './helpers.js';
 
 //#################### Public API ####################
 
@@ -9,10 +10,11 @@ export interface StreamingHljsEmitter {
   startScope(name: string): void;
   endScope(): void;
   addText(text: string): void;
-  __addSublanguage(subLanguageName: string): void;
+  startSublanguage(subLanguageName: string): void;
+  endSublanguage(): void;
 }
 
-function highlight(code: string, language: null | string, emitter: StreamingHljsEmitter) {
+function highlight(code: string, language: null | string, emitter: StreamingHljsEmitter): void {
   language ??= 'txt';
   const hljsInst = hljs.newInstance();
   hljsInst.registerLanguage('javascript', javascript);
@@ -46,7 +48,8 @@ type Operation =
   | OperationStartScope
   | OperationEndScope
   | OperationAddText
-  | OperationAddSublanguage
+  | OperationStartSublanguage
+  | OperationEndSublanguage
   ;
 interface OperationStartScope {
   kind: 'OperationStartScope',
@@ -59,9 +62,12 @@ interface OperationAddText {
   kind: 'OperationAddText',
   text: string,
 }
-interface OperationAddSublanguage {
-  kind: 'OperationAddSublanguage',
+interface OperationStartSublanguage {
+  kind: 'OperationStartSublanguage',
   subLanguageName: string,
+}
+interface OperationEndSublanguage {
+  kind: 'OperationEndSublanguage',
 }
 
 const instanceCountKey = Symbol('instanceCountKey');
@@ -138,7 +144,7 @@ class StreamingEmitterAdapter implements Emitter {
   __addSublanguage(emitter: Emitter, subLanguageName: string) {
     assertTrue(emitter instanceof StreamingEmitterAdapter);
     if (this.streamingEmitter) {
-      this.streamingEmitter.__addSublanguage(subLanguageName);
+      this.streamingEmitter.startSublanguage(subLanguageName);
       for (const op of emitter.storedOperations) {
         switch (op.kind) {
           case 'OperationStartScope':
@@ -150,39 +156,32 @@ class StreamingEmitterAdapter implements Emitter {
           case 'OperationAddText':
             this.streamingEmitter.addText(op.text);
             break;
-          case 'OperationAddSublanguage':
-            this.streamingEmitter.__addSublanguage(op.subLanguageName);
+          case 'OperationStartSublanguage':
+            this.streamingEmitter.startSublanguage(op.subLanguageName);
+            break;
+          case 'OperationEndSublanguage':
+            this.streamingEmitter.endSublanguage();
             break;
           default:
             throw new UnsupportedValueError(op);
         }
       }
+      this.streamingEmitter.endSublanguage();
     } else {
       this.storedOperations.push({
-        kind: 'OperationAddSublanguage',
+        kind: 'OperationStartSublanguage',
         subLanguageName
       });
       this.storedOperations.push(...emitter.storedOperations);
+      this.storedOperations.push({
+        kind: 'OperationEndSublanguage',
+      });
     }
   }
   toHTML() {
     return '';
   }
   finalize() { }
-}
-
-//#################### Helpers ####################
-
-function assertTrue(value: boolean, message = ''): asserts value {
-  if (!value) {
-    throw new Error(message);
-  }
-}
-
-class UnsupportedValueError extends Error {
-  constructor(value: never, message = `Unsupported value: ${value}`) {
-    super(message)
-  }
 }
 
 //#################### Main ####################
@@ -214,11 +213,13 @@ if (import.meta.url.startsWith('file:')) {
         addText(text: string): void {
           console.log('addText %j', text);
         },
-        __addSublanguage(subLanguageName: string): void {
-          console.log('__addSublanguage %j', subLanguageName);
+        startSublanguage(subLanguageName: string): void {
+          console.log('startSublanguage %j', subLanguageName);
+        },
+        endSublanguage(): void {
+          console.log('endSublanguage');
         },
       }
     );
   }
 }
-
