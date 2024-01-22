@@ -10,7 +10,7 @@ export interface StreamingHljsEmitter {
   startScope(name: string): void;
   endScope(): void;
   addText(text: string): void;
-  startSublanguage(subLanguageName: string): void;
+  startSublanguage(sublanguageName: string): void;
   endSublanguage(): void;
 }
 
@@ -64,7 +64,7 @@ interface OperationAddText {
 }
 interface OperationStartSublanguage {
   kind: 'OperationStartSublanguage',
-  subLanguageName: string,
+  sublanguageName: string,
 }
 interface OperationEndSublanguage {
   kind: 'OperationEndSublanguage',
@@ -141,10 +141,10 @@ class StreamingEmitterAdapter implements Emitter {
       });
     }
   }
-  __addSublanguage(emitter: Emitter, subLanguageName: string) {
+  __addSublanguage(emitter: Emitter, sublanguageName: string) {
     assertTrue(emitter instanceof StreamingEmitterAdapter);
     if (this.streamingEmitter) {
-      this.streamingEmitter.startSublanguage(subLanguageName);
+      this.streamingEmitter.startSublanguage(sublanguageName);
       for (const op of emitter.storedOperations) {
         switch (op.kind) {
           case 'OperationStartScope':
@@ -157,7 +157,7 @@ class StreamingEmitterAdapter implements Emitter {
             this.streamingEmitter.addText(op.text);
             break;
           case 'OperationStartSublanguage':
-            this.streamingEmitter.startSublanguage(op.subLanguageName);
+            this.streamingEmitter.startSublanguage(op.sublanguageName);
             break;
           case 'OperationEndSublanguage':
             this.streamingEmitter.endSublanguage();
@@ -170,7 +170,7 @@ class StreamingEmitterAdapter implements Emitter {
     } else {
       this.storedOperations.push({
         kind: 'OperationStartSublanguage',
-        subLanguageName
+        sublanguageName
       });
       this.storedOperations.push(...emitter.storedOperations);
       this.storedOperations.push({
@@ -213,8 +213,8 @@ if (import.meta.url.startsWith('file:')) {
         addText(text: string): void {
           console.log('addText %j', text);
         },
-        startSublanguage(subLanguageName: string): void {
-          console.log('startSublanguage %j', subLanguageName);
+        startSublanguage(sublanguageName: string): void {
+          console.log('startSublanguage %j', sublanguageName);
         },
         endSublanguage(): void {
           console.log('endSublanguage');

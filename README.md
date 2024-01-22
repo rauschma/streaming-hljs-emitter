@@ -19,6 +19,8 @@ Output: see [`tracing-output.txt`](tracing-output.txt)
   * Instance #1 is never finalized.
   * It looks like instance #1 and instance #3 are created and thrown away without them ever being used (via `__addSublanguage`).
 * Highlight.js only adds the class `<span class="language-*">` for nested languages, not for the top-level language. I don’t know if that’s intentional.
+* Naming consistency: `__addSublanguage(emitter: Emitter, subLanguageName: string): void`
+  * Suggestion: Rename `subLanguageName` to `sublanguageName`
 
 ### Change the API?
 
