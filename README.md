@@ -2,6 +2,22 @@
 
 * Documentation for the Emitter API: https://highlightjs.readthedocs.io/en/latest/mode-reference.html
 
+## `streaming-hljs-emitter.ts`
+
+Lets you use Highlight.js via the following interface:
+
+```ts
+export interface StreamingHljsEmitter {
+  startScope(name: string): void;
+  endScope(): void;
+  addText(text: string): void;
+  startSublanguage(sublanguageName: string): void;
+  endSublanguage(): void;
+}
+```
+
+Its methods are invoked in the order in which scopes, texts and sublanguages appear in the text that is highlighted.
+
 ## Tracing what happens
 
 Run TypeScript like this (`tsx` is installed locally):
@@ -33,18 +49,3 @@ I don’t know if that’s possible but the Emitter API would be more versatile 
 * Consequence: `.finalize()` may not be needed anymore, especially since `.toHTML()` is invoked anyway.
 
 **Why make these changes?** Some clients don’t need to build trees – they only want a stream of changes. Currently such clients have to store the changes somewhere to ensure that they can be processed in order. With the proposed changes that wouldn’t be necessary anymore.
-
-## `streaming-hljs-emitter.ts`
-
-Lets you use Highlight.js via the following interface:
-
-```ts
-interface StreamingHljsEmitter {
-  startScope(name: string): void;
-  endScope(): void;
-  addText(text: string): void;
-  __addSublanguage(subLanguageName: string): void;
-}
-```
-
-Its methods are invoked in the order in which scopes, texts and sublanguages appear in the text that is highlighted.

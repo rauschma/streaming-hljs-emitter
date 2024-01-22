@@ -14,7 +14,7 @@ export interface StreamingHljsEmitter {
   endSublanguage(): void;
 }
 
-function highlight(code: string, language: null | string, emitter: StreamingHljsEmitter): void {
+export function streamHighlights(code: string, language: null | string, emitter: StreamingHljsEmitter): void {
   language ??= 'txt';
   const hljsInst = hljs.newInstance();
   hljsInst.registerLanguage('javascript', javascript);
@@ -200,7 +200,7 @@ if (import.meta.url.startsWith('file:')) {
   const modulePath = url.fileURLToPath(import.meta.url);
   if (process.argv[1] === modulePath) {
     // Main ESM module
-    highlight(
+    streamHighlights(
       html,
       'html',
       {
