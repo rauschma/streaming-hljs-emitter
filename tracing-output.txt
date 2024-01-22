@@ -1,0 +1,74 @@
+⮕ constructor 0
+• [0] addText "\n"
+  [0] openNode tag
+• [0] addText "<"
+  [0] openNode name
+• [0] addText "html"
+  [0] closeNode
+• [0] addText ">"
+  [0] closeNode
+• [0] addText "\n  "
+  [0] openNode tag
+• [0] addText "<"
+  [0] startScope name
+• [0] addText "script"
+  [0] endScope
+• [0] addText ""
+• [0] addText ">"
+  [0] closeNode
+⮕ constructor 1
+• [1] addText "\n    function add(x, y) { return x + y }\n  "
+⮕ constructor 2
+• [2] addText "\n    "
+  [2] startScope keyword
+• [2] addText "function"
+  [2] endScope
+• [2] addText " "
+  [2] startScope title.function
+• [2] addText "add"
+  [2] endScope
+• [2] addText ""
+• [2] addText "("
+  [2] openNode params
+• [2] addText "x, y"
+  [2] closeNode
+• [2] addText ")"
+• [2] addText " "
+• [2] addText "{ "
+• [2] addText ""
+• [2] addText ""
+  [2] startScope keyword
+• [2] addText "return"
+  [2] endScope
+• [2] addText " "
+• [2] addText "x "
+• [2] addText "+ "
+• [2] addText "y }\n  "
+⬅︎ finalize 2
+  [2] toHTML
+⮕ constructor 3
+• [3] addText "\n    function add(x, y) { return x + y }\n  "
+⬅︎ finalize 3
+  [3] toHTML
+  [0] __addSublanguage 2 javascript
+• [0] addText ""
+  [0] openNode tag
+• [0] addText "</"
+  [0] openNode name
+• [0] addText "script"
+  [0] closeNode
+• [0] addText ""
+• [0] addText ">"
+  [0] closeNode
+• [0] addText "\n"
+  [0] openNode tag
+• [0] addText "</"
+  [0] openNode name
+• [0] addText "html"
+  [0] closeNode
+• [0] addText ""
+• [0] addText ">"
+  [0] closeNode
+• [0] addText "\n"
+⬅︎ finalize 0
+  [0] toHTML

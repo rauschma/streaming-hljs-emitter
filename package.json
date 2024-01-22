@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@types/node": "^20.11.5",
+    "highlight.js": "^11.9.0",
+    "tsx": "^4.7.0"
+  }
+}
