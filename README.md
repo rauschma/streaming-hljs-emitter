@@ -46,6 +46,6 @@ I don’t know if that’s possible but the Emitter API would be more versatile 
 * That enables: `HLJSOptions.__emitter: Emitter` (an instance, not a class)
   * Benefit: A client of Highlight.js can set up the instance itself and doesn’t have to (ab)use `HLJSOptions` to do so.
 * Consequence: `__addSublanguage(name)` (only a single parameter)
-* Consequence: `.finalize()` may not be needed anymore, especially since `.toHTML()` is invoked anyway.
+* Maybe: Rename `__addSublanguage` to `startSublanguage` and `finalize` to `endSublanguage`?
 
 **Why make these changes?** Some clients don’t need to build trees – they only want a stream of changes. Currently such clients have to store the changes somewhere to ensure that they can be processed in order. With the proposed changes that wouldn’t be necessary anymore.
