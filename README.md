@@ -34,9 +34,6 @@ Output: see [`tracing-output.txt`](tracing-output.txt)
 * `tracing-output.txt`:
   * Instance #1 is never finalized.
   * It looks like instance #1 and instance #3 are created and thrown away without them ever being used (via `__addSublanguage`).
-* Highlight.js only adds the class `<span class="language-*">` for nested languages, not for the top-level language. I don’t know if that’s intentional.
-* Naming consistency: `__addSublanguage(emitter: Emitter, subLanguageName: string): void`
-  * Suggestion: Rename `subLanguageName` to `sublanguageName`
 
 ### Change the API?
 
@@ -45,7 +42,6 @@ I don’t know if that’s possible but the Emitter API would be more versatile 
 * Only a single instance of an Emitter is used.
 * That enables: `HLJSOptions.__emitter: Emitter` (an instance, not a class)
   * Benefit: A client of Highlight.js can set up the instance itself and doesn’t have to (ab)use `HLJSOptions` to do so.
-* Consequence: `__addSublanguage(name)` (only a single parameter)
-* Maybe: Rename `__addSublanguage` to `startSublanguage` and `finalize` to `endSublanguage`?
+* Suggested interface for emitters: see above.
 
 **Why make these changes?** Some clients don’t need to build trees – they only want a stream of changes. Currently such clients have to store the changes somewhere to ensure that they can be processed in order. With the proposed changes that wouldn’t be necessary anymore.
