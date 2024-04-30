@@ -68,12 +68,12 @@ function highlight(code: string, language: null | string) {
 }
 
 highlight(
-  `
+`
 <html>
   <script>
     function add(x, y) { return x + y }
   </script>
 </html>
-`,
+`.trim(),
   'html'
 );
